@@ -1,0 +1,347 @@
+Requesting a Cloud Shell.Succeeded. 
+Connecting terminal...
+
+Welcome to Azure Cloud Shell
+
+Type "az" to use Azure CLI
+Type "help" to learn about Cloud Shell
+
+
+MOTD: You can now copy & paste in Cloud Shell using Ctrl+C/Ctrl+V (Linux/Windows) or Cmd+C/Cmd+V (Mac)! Learn more: https://aka.ms/cloudshell/copy-paste
+
+VERBOSE: Authenticating to Azure ...
+PS /home/azureuser> ssh harimurari@20.46.237.131
+harimurari@20.46.237.131's password: 
+Permission denied, please try again.
+harimurari@20.46.237.131's password: 
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.14.0-1017-azure x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Mar  4 03:29:40 UTC 2026
+
+  System load:  0.03              Processes:             120
+  Usage of /:   7.5% of 28.02GB   Users logged in:       0
+  Memory usage: 36%               IPv4 address for eth0: 10.0.0.4
+  Swap usage:   0%
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+Expanded Security Maintenance for Applications is not enabled.
+
+52 updates can be applied immediately.
+39 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+1 additional security update can be applied with ESM Apps.
+Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+
+
+Last login: Wed Mar  4 03:25:33 2026 from 4.151.247.225
+harimurari@master:~$ sudo su -
+root@master:~# sudo apt update
+Hit:1 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+Hit:2 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+Hit:3 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+Hit:4 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+44 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@master:~# apt install docker.io -y
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+docker.io is already the newest version (28.2.2-0ubuntu1~24.04.1).
+0 upgraded, 0 newly installed, 0 to remove and 44 not upgraded.
+root@master:~# docker version
+Client:
+ Version:           28.2.2
+ API version:       1.50
+ Go version:        go1.23.1
+ Git commit:        28.2.2-0ubuntu1~24.04.1
+ Built:             Wed Sep 10 14:16:39 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server:
+ Engine:
+  Version:          28.2.2
+  API version:      1.50 (minimum version 1.24)
+  Go version:       go1.23.1
+  Git commit:       28.2.2-0ubuntu1~24.04.1
+  Built:            Wed Sep 10 14:16:39 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.7.28
+  GitCommit:        
+ runc:
+  Version:          1.3.3-0ubuntu1~24.04.3
+  GitCommit:        
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        
+root@master:~# docker swarm init
+Swarm initialized: current node (ndgtwghpoeajrkw4d503igesn) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-4n0gnqdsmxad0dnl60lbtabaz44kovo0x66wpqlj7oudq39fq7-d9sriefykx24swvl6t04hwar2 10.0.0.4:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+root@master:~# docker service create -p 8090:80 --name webservice nginx
+vskebvw2idntekqyjepqy7rgk
+overall progress: 1 out of 1 tasks 
+1/1: running   [==================================================>] 
+verify: Service vskebvw2idntekqyjepqy7rgk converged 
+root@master:~# docker service ls
+ID             NAME         MODE         REPLICAS   IMAGE          PORTS
+vskebvw2idnt   webservice   replicated   1/1        nginx:latest   *:8090->80/tcp
+root@master:~# docker service scale webservice=10
+webservice scaled to 10
+overall progress: 10 out of 10 tasks 
+1/10: running   [==================================================>] 
+2/10: running   [==================================================>] 
+3/10: running   [==================================================>] 
+4/10: running   [==================================================>] 
+5/10: running   [==================================================>] 
+6/10: running   [==================================================>] 
+7/10: running   [==================================================>] 
+8/10: running   [==================================================>] 
+9/10: running   [==================================================>] 
+10/10: running   [==================================================>] 
+verify: Service webservice converged 
+root@master:~# docker service ls
+ID             NAME         MODE         REPLICAS   IMAGE          PORTS
+vskebvw2idnt   webservice   replicated   10/10      nginx:latest   *:8090->80/tcp
+root@master:~# docker service ps webservice 
+ID             NAME            IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+whci91o8ht9e   webservice.1    nginx:latest   master    Running         Running 2 minutes ago              
+jv9flljggvvj   webservice.2    nginx:latest   murari    Running         Running 35 seconds ago             
+j6co8x8gzcu1   webservice.3    nginx:latest   nikhil    Running         Running 35 seconds ago             
+sjmms91uz0em   webservice.4    nginx:latest   murari    Running         Running 35 seconds ago             
+79xhalb13msg   webservice.5    nginx:latest   murari    Running         Running 35 seconds ago             
+iwb9ytfvojdd   webservice.6    nginx:latest   nikhil    Running         Running 35 seconds ago             
+8s5wcjdubih3   webservice.7    nginx:latest   master    Running         Running 43 seconds ago             
+o2rqsndjo57m   webservice.8    nginx:latest   master    Running         Running 43 seconds ago             
+btfsjce4kjyd   webservice.9    nginx:latest   nikhil    Running         Running 35 seconds ago             
+ce3plxqec44m   webservice.10   nginx:latest   nikhil    Running         Running 35 seconds ago             
+root@master:~# docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+ndgtwghpoeajrkw4d503igesn *   master     Ready     Active         Leader           28.2.2
+p8cmpmdfvatkwdjg4rny5p9t5     murari     Ready     Active                          28.2.2
+yrw44vvc7oxl5evjn0rh8oc1f     nikhil     Ready     Active                          28.2.2
+root@master:~# docker node update --availability drain master
+master
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running 3 seconds ago              
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown 4 seconds ago             
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 2 minutes ago              
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 3 minutes ago              
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 2 minutes ago              
+79xhalb13msg   webservice.5       nginx:latest   murari    Running         Running 2 minutes ago              
+iwb9ytfvojdd   webservice.6       nginx:latest   nikhil    Running         Running 3 minutes ago              
+p4cnebvsoyca   webservice.7       nginx:latest   murari    Running         Running 3 seconds ago              
+8s5wcjdubih3    \_ webservice.7   nginx:latest   master    Shutdown        Shutdown 4 seconds ago             
+a20cobbgd8fn   webservice.8       nginx:latest   nikhil    Running         Running 4 seconds ago              
+o2rqsndjo57m    \_ webservice.8   nginx:latest   master    Shutdown        Shutdown 4 seconds ago             
+btfsjce4kjyd   webservice.9       nginx:latest   nikhil    Running         Running 2 minutes ago              
+ce3plxqec44m   webservice.10      nginx:latest   nikhil    Running         Running 2 minutes ago              
+root@master:~# docker service scale webservice=5
+webservice scaled to 5
+overall progress: 5 out of 5 tasks 
+1/5: running   [==================================================>] 
+2/5: running   [==================================================>] 
+3/5: running   [==================================================>] 
+4/5: running   [==================================================>] 
+5/5: running   [==================================================>] 
+verify: Service webservice converged 
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE             ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running 36 seconds ago              
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown 37 seconds ago             
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 3 minutes ago               
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 3 minutes ago               
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 3 minutes ago               
+iwb9ytfvojdd   webservice.6       nginx:latest   nikhil    Running         Running 3 minutes ago               
+8s5wcjdubih3   webservice.7       nginx:latest   master    Shutdown        Shutdown 37 seconds ago             
+o2rqsndjo57m   webservice.8       nginx:latest   master    Shutdown        Shutdown 37 seconds ago             
+root@master:~# docker service scale webservice=15
+webservice scaled to 15
+overall progress: 15 out of 15 tasks 
+1/15: running   [==================================================>] 
+2/15: running   [==================================================>] 
+3/15: running   [==================================================>] 
+4/15: running   [==================================================>] 
+5/15: running   [==================================================>] 
+6/15: running   [==================================================>] 
+7/15: running   [==================================================>] 
+8/15: running   [==================================================>] 
+9/15: running   [==================================================>] 
+10/15: running   [==================================================>] 
+11/15: running   [==================================================>] 
+12/15: running   [==================================================>] 
+13/15: running   [==================================================>] 
+14/15: running   [==================================================>] 
+15/15: running   [==================================================>] 
+verify: Service webservice converged 
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE                 ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running about a minute ago              
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown about a minute ago             
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 4 minutes ago                   
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 4 minutes ago                   
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 4 minutes ago                   
+res22fq55c9t   webservice.5       nginx:latest   nikhil    Running         Running 11 seconds ago                  
+iwb9ytfvojdd   webservice.6       nginx:latest   nikhil    Running         Running 4 minutes ago                   
+rlqlcjz058rt   webservice.7       nginx:latest   nikhil    Running         Running 10 seconds ago                  
+8s5wcjdubih3    \_ webservice.7   nginx:latest   master    Shutdown        Shutdown about a minute ago             
+rzroxf784vla   webservice.8       nginx:latest   nikhil    Running         Running 10 seconds ago                  
+o2rqsndjo57m    \_ webservice.8   nginx:latest   master    Shutdown        Shutdown about a minute ago             
+al3t3qieyi50   webservice.9       nginx:latest   murari    Running         Running 10 seconds ago                  
+vagwm5ex3mct   webservice.10      nginx:latest   nikhil    Running         Running 11 seconds ago                  
+s251x8srwd27   webservice.11      nginx:latest   murari    Running         Running 11 seconds ago                  
+pqelxrd7m9ie   webservice.12      nginx:latest   murari    Running         Running 10 seconds ago                  
+hxym7ym2fml9   webservice.13      nginx:latest   murari    Running         Running 10 seconds ago                  
+zmrz5icarj2t   webservice.14      nginx:latest   nikhil    Running         Running 10 seconds ago                  
+bhmgw1l5gi4m   webservice.15      nginx:latest   nikhil    Running         Running 10 seconds ago                  
+root@master:~# docker node update --availability active  master
+master
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE                 ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running about a minute ago              
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown about a minute ago             
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 4 minutes ago                   
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 4 minutes ago                   
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 4 minutes ago                   
+res22fq55c9t   webservice.5       nginx:latest   nikhil    Running         Running 59 seconds ago                  
+iwb9ytfvojdd   webservice.6       nginx:latest   nikhil    Running         Running 4 minutes ago                   
+rlqlcjz058rt   webservice.7       nginx:latest   nikhil    Running         Running 58 seconds ago                  
+8s5wcjdubih3    \_ webservice.7   nginx:latest   master    Shutdown        Shutdown about a minute ago             
+rzroxf784vla   webservice.8       nginx:latest   nikhil    Running         Running 58 seconds ago                  
+o2rqsndjo57m    \_ webservice.8   nginx:latest   master    Shutdown        Shutdown about a minute ago             
+al3t3qieyi50   webservice.9       nginx:latest   murari    Running         Running 58 seconds ago                  
+vagwm5ex3mct   webservice.10      nginx:latest   nikhil    Running         Running 58 seconds ago                  
+s251x8srwd27   webservice.11      nginx:latest   murari    Running         Running 59 seconds ago                  
+pqelxrd7m9ie   webservice.12      nginx:latest   murari    Running         Running 58 seconds ago                  
+hxym7ym2fml9   webservice.13      nginx:latest   murari    Running         Running 58 seconds ago                  
+zmrz5icarj2t   webservice.14      nginx:latest   nikhil    Running         Running 58 seconds ago                  
+bhmgw1l5gi4m   webservice.15      nginx:latest   nikhil    Running         Running 58 seconds ago                  
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running 3 minutes ago              
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown 3 minutes ago             
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 6 minutes ago              
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 6 minutes ago              
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 6 minutes ago              
+res22fq55c9t   webservice.5       nginx:latest   nikhil    Running         Running 2 minutes ago              
+iwb9ytfvojdd   webservice.6       nginx:latest   nikhil    Running         Running 6 minutes ago              
+rlqlcjz058rt   webservice.7       nginx:latest   nikhil    Running         Running 2 minutes ago              
+8s5wcjdubih3    \_ webservice.7   nginx:latest   master    Shutdown        Shutdown 3 minutes ago             
+rzroxf784vla   webservice.8       nginx:latest   nikhil    Running         Running 2 minutes ago              
+o2rqsndjo57m    \_ webservice.8   nginx:latest   master    Shutdown        Shutdown 3 minutes ago             
+al3t3qieyi50   webservice.9       nginx:latest   murari    Running         Running 2 minutes ago              
+vagwm5ex3mct   webservice.10      nginx:latest   nikhil    Running         Running 2 minutes ago              
+s251x8srwd27   webservice.11      nginx:latest   murari    Running         Running 2 minutes ago              
+pqelxrd7m9ie   webservice.12      nginx:latest   murari    Running         Running 2 minutes ago              
+hxym7ym2fml9   webservice.13      nginx:latest   murari    Running         Running 2 minutes ago              
+zmrz5icarj2t   webservice.14      nginx:latest   nikhil    Running         Running 2 minutes ago              
+bhmgw1l5gi4m   webservice.15      nginx:latest   nikhil    Running         Running 2 minutes ago              
+root@master:~# docker service scale webservice=5
+webservice scaled to 5
+overall progress: 5 out of 5 tasks 
+1/5: running   [==================================================>] 
+2/5: running   [==================================================>] 
+3/5: running   [==================================================>] 
+4/5: running   [==================================================>] 
+5/5: running   [==================================================>] 
+verify: Service webservice converged 
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running 3 minutes ago              
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown 3 minutes ago             
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 6 minutes ago              
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 6 minutes ago              
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 6 minutes ago              
+res22fq55c9t   webservice.5       nginx:latest   nikhil    Running         Running 2 minutes ago              
+8s5wcjdubih3   webservice.7       nginx:latest   master    Shutdown        Shutdown 3 minutes ago             
+o2rqsndjo57m   webservice.8       nginx:latest   master    Shutdown        Shutdown 3 minutes ago             
+root@master:~# docker service scale webservice=15
+webservice scaled to 15
+overall progress: 15 out of 15 tasks 
+1/15: running   [==================================================>] 
+2/15: running   [==================================================>] 
+3/15: running   [==================================================>] 
+4/15: running   [==================================================>] 
+5/15: running   [==================================================>] 
+6/15: running   [==================================================>] 
+7/15: running   [==================================================>] 
+8/15: running   [==================================================>] 
+9/15: running   [==================================================>] 
+10/15: running   [==================================================>] 
+11/15: running   [==================================================>] 
+12/15: running   [==================================================>] 
+13/15: running   [==================================================>] 
+14/15: running   [==================================================>] 
+15/15: running   [==================================================>] 
+verify: Service webservice converged 
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running 4 minutes ago              
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown 4 minutes ago             
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 6 minutes ago              
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 6 minutes ago              
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 6 minutes ago              
+res22fq55c9t   webservice.5       nginx:latest   nikhil    Running         Running 3 minutes ago              
+u5z6v88yeg9b   webservice.6       nginx:latest   nikhil    Running         Running 10 seconds ago             
+g5zv920628dc   webservice.7       nginx:latest   master    Running         Running 9 seconds ago              
+8s5wcjdubih3    \_ webservice.7   nginx:latest   master    Shutdown        Shutdown 4 minutes ago             
+c1p620n5b2vb   webservice.8       nginx:latest   nikhil    Running         Running 10 seconds ago             
+o2rqsndjo57m    \_ webservice.8   nginx:latest   master    Shutdown        Shutdown 4 minutes ago             
+t1jvqzg3vmdd   webservice.9       nginx:latest   murari    Running         Running 10 seconds ago             
+6btj8d6fz72e   webservice.10      nginx:latest   master    Running         Running 9 seconds ago              
+x0anhf0jphde   webservice.11      nginx:latest   master    Running         Running 10 seconds ago             
+l49vg69h7tm0   webservice.12      nginx:latest   murari    Running         Running 10 seconds ago             
+xhvnytllddf8   webservice.13      nginx:latest   nikhil    Running         Running 10 seconds ago             
+4hm6ww889iy9   webservice.14      nginx:latest   master    Running         Running 9 seconds ago              
+ohtc00l0itnn   webservice.15      nginx:latest   master    Running         Running 10 seconds ago             
+root@master:~# docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+ndgtwghpoeajrkw4d503igesn *   master     Ready     Active         Leader           28.2.2
+p8cmpmdfvatkwdjg4rny5p9t5     murari     Ready     Active                          28.2.2
+yrw44vvc7oxl5evjn0rh8oc1f     nikhil     Ready     Active                          28.2.2
+root@master:~# docker node update --availability pause  master
+master
+root@master:~# docker service ps webservice 
+ID             NAME               IMAGE          NODE      DESIRED STATE   CURRENT STATE                ERROR     PORTS
+wz5rj5nkwdmu   webservice.1       nginx:latest   murari    Running         Running 5 minutes ago                  
+whci91o8ht9e    \_ webservice.1   nginx:latest   master    Shutdown        Shutdown 5 minutes ago                 
+jv9flljggvvj   webservice.2       nginx:latest   murari    Running         Running 8 minutes ago                  
+j6co8x8gzcu1   webservice.3       nginx:latest   nikhil    Running         Running 8 minutes ago                  
+sjmms91uz0em   webservice.4       nginx:latest   murari    Running         Running 8 minutes ago                  
+res22fq55c9t   webservice.5       nginx:latest   nikhil    Running         Running 4 minutes ago                  
+u5z6v88yeg9b   webservice.6       nginx:latest   nikhil    Running         Running about a minute ago             
+g5zv920628dc   webservice.7       nginx:latest   master    Running         Running about a minute ago             
+8s5wcjdubih3    \_ webservice.7   nginx:latest   master    Shutdown        Shutdown 5 minutes ago                 
+c1p620n5b2vb   webservice.8       nginx:latest   nikhil    Running         Running about a minute ago             
+o2rqsndjo57m    \_ webservice.8   nginx:latest   master    Shutdown        Shutdown 5 minutes ago                 
+t1jvqzg3vmdd   webservice.9       nginx:latest   murari    Running         Running about a minute ago             
+6btj8d6fz72e   webservice.10      nginx:latest   master    Running         Running about a minute ago             
+x0anhf0jphde   webservice.11      nginx:latest   master    Running         Running about a minute ago             
+l49vg69h7tm0   webservice.12      nginx:latest   murari    Running         Running about a minute ago             
+xhvnytllddf8   webservice.13      nginx:latest   nikhil    Running         Running about a minute ago             
+4hm6ww889iy9   webservice.14      nginx:latest   master    Running         Running about a minute ago             
+ohtc00l0itnn   webservice.15      nginx:latest   master    Running         Running about a minute ago             
+root@master:~# docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+ndgtwghpoeajrkw4d503igesn *   master     Ready     Pause          Leader           28.2.2
+p8cmpmdfvatkwdjg4rny5p9t5     murari     Ready     Active                          28.2.2
+yrw44vvc7oxl5evjn0rh8oc1f     nikhil     Ready     Active                          28.2.2
+root@master:~#

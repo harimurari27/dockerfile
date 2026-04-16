@@ -1,0 +1,126 @@
+root@vm1:~# mkdir myapp
+root@vm1:~# cd myapp/
+root@vm1:~/myapp# echo print("Hello from my first Docker image!") > app.py
+-bash: syntax error near unexpected token `('
+root@vm1:~/myapp# cat > app.py << 'EOF'
+print("Hello from my first Docker image!")
+EOF
+root@vm1:~/myapp# cat app.py
+print("Hello from my first Docker image!")
+root@vm1:~/myapp# cat > Dockerfile << 'EOF'
+FROM python:3.10-slim
+WORKDIR /app
+COPY app.py .
+CMD ["python", "app.py"]
+EOF
+root@vm1:~/myapp# cat Dockerfile
+FROM python:3.10-slim
+WORKDIR /app
+COPY app.py .
+CMD ["python", "app.py"]
+root@vm1:~/myapp# docker build -t my-first-image .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  3.072kB
+Step 1/4 : FROM python:3.10-slim
+3.10-slim: Pulling from library/python
+206356c42440: Pulling fs layer
+aecf3e6b3e04: Pulling fs layer
+44df7c9b0118: Pulling fs layer
+7fe6b2798913: Pulling fs layer
+7fe6b2798913: Waiting
+aecf3e6b3e04: Verifying Checksum
+aecf3e6b3e04: Download complete
+44df7c9b0118: Verifying Checksum
+44df7c9b0118: Download complete
+206356c42440: Verifying Checksum
+206356c42440: Download complete
+7fe6b2798913: Verifying Checksum
+7fe6b2798913: Download complete
+206356c42440: Pull complete
+aecf3e6b3e04: Pull complete
+44df7c9b0118: Pull complete
+7fe6b2798913: Pull complete
+Digest: sha256:4b0a8ebf16cf4563f3d3732bd4f4a464abb2f671b3b9d00aab281d705d224457
+Status: Downloaded newer image for python:3.10-slim
+ ---> c2cb0450ef76
+Step 2/4 : WORKDIR /app
+ ---> Running in f9b72447e481
+ ---> Removed intermediate container f9b72447e481
+ ---> 6d8b8a95528e
+Step 3/4 : COPY app.py .
+ ---> 743478a612dd
+Step 4/4 : CMD ["python", "app.py"]
+ ---> Running in d6a023896184
+ ---> Removed intermediate container d6a023896184
+ ---> 8c593aa8d8bb
+Successfully built 8c593aa8d8bb
+Successfully tagged my-first-image:latest
+root@vm1:~/myapp# docker run --rm my-first-image
+Hello from my first Docker image!
+root@vm1:~/myapp# docker login
+
+USING WEB-BASED LOGIN
+
+i Info → To sign in with credentials on the command line, use 'docker login -u <username>'
+         
+
+Your one-time device confirmation code is: VBHH-QBND
+Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
+
+Waiting for authentication in the browser…
+
+WARNING! Your credentials are stored unencrypted in '/root/.docker/config.json'.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/go/credential-store/
+
+Login Succeeded
+root@vm1:~/myapp# docker tag my-first-image HariMurari/my-first-image:latest
+root@vm1:~/myapp# docker push YOUR_USERNAME/my-first-image:latest
+repository name must be lowercase
+root@vm1:~/myapp# docker push harimurari/my-first-image:latest
+The push refers to repository [docker.io/harimurari/my-first-image]
+An image does not exist locally with the tag: harimurari/my-first-image
+root@vm1:~/myapp# docker push HariMurari/my-first-image:latest
+The push refers to repository [HariMurari/my-first-image]
+Get "https://HariMurari/v2/": dial tcp: lookup HariMurari on 127.0.0.53:53: server misbehaving
+root@vm1:~/myapp# docker login
+Authenticating with existing credentials... [Username: harimurari]
+
+i Info → To login with a different account, run 'docker logout' followed by 'docker login'
+
+
+Login Succeeded
+root@vm1:~/myapp# docker images
+REPOSITORY                  TAG         IMAGE ID       CREATED          SIZE
+HariMurari/my-first-image   latest      8c593aa8d8bb   15 minutes ago   122MB
+my-first-image              latest      8c593aa8d8bb   15 minutes ago   122MB
+python                      3.10-slim   c2cb0450ef76   6 days ago       122MB
+root@vm1:~/myapp# docker tag my-first-image docker.io/harimurari/my-first-image:latest
+root@vm1:~/myapp# docker images | grep my-first-image
+HariMurari/my-first-image   latest      8c593aa8d8bb   16 minutes ago   122MB
+harimurari/my-first-image   latest      8c593aa8d8bb   16 minutes ago   122MB
+my-first-image              latest      8c593aa8d8bb   16 minutes ago   122MB
+root@vm1:~/myapp# docker push harimurari/my-first-image:latest
+The push refers to repository [docker.io/harimurari/my-first-image]
+431075af92ab: Pushed 
+4ca55a440579: Pushed 
+2fd0c1d1e8b0: Mounted from library/python 
+2d94d223d76c: Mounted from library/python 
+ec442668ab9b: Mounted from library/python 
+a257f20c716c: Mounted from library/python 
+latest: digest: sha256:8cddd451995559a15145f4492fbb2de3f7153de84c0821b07d917b540ebc7f6b size: 1572
+root@vm1:~/myapp# docker pull harimurari/my-first-image:latest
+latest: Pulling from harimurari/my-first-image
+Digest: sha256:8cddd451995559a15145f4492fbb2de3f7153de84c0821b07d917b540ebc7f6b
+Status: Image is up to date for harimurari/my-first-image:latest
+docker.io/harimurari/my-first-image:latest
+root@vm1:~/myapp# docker images
+REPOSITORY                  TAG         IMAGE ID       CREATED          SIZE
+HariMurari/my-first-image   latest      8c593aa8d8bb   21 minutes ago   122MB
+harimurari/my-first-image   latest      8c593aa8d8bb   21 minutes ago   122MB
+my-first-image              latest      8c593aa8d8bb   21 minutes ago   122MB
+python                      3.10-slim   c2cb0450ef76   6 days ago       122MB
+root@vm1:~/myapp# 
