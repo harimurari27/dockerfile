@@ -124,3 +124,4 @@ harimurari/my-first-image   latest      8c593aa8d8bb   21 minutes ago   122MB
 my-first-image              latest      8c593aa8d8bb   21 minutes ago   122MB
 python                      3.10-slim   c2cb0450ef76   6 days ago       122MB
 root@vm1:~/myapp# 
+This document covers pulling.
