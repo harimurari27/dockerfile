@@ -27,3 +27,4 @@ RUN chown -R jenkins:jenkins /opt/maven
 RUN apt-get clean
 
 USER jenkins
+This file explains Docker basics in simple words.
